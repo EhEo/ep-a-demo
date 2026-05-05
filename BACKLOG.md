@@ -80,18 +80,36 @@
 
 ## Task 5: lock 산출물 도입 (Task 4 분리)
 
-**상태**: 대기
+**상태**: 대기 (도구 결정 완료, 실제 도입은 환경 정비 후)
 
 **배경**: Task 4 에서 분리. Task 3 audit 의 재현성 목표를 만족시키려면 transitive dep 까지 고정한 lock 산출물이 필요. 핀 정책 (Task 4) 은 이미 통일됐으므로, 이 task 는 *도구 선택 + 산출물 도입* 만 다룸.
 
-**Codex 권고로 좁힌 후보**:
-- A. `pip-compile` (pip-tools): `requirements.in` 추가 → 컴파일된 `requirements.txt` 가 산출물. 기존 형상 거의 유지.
-- B. `constraints.txt`: 별도 파일로 transitive 까지 exact pin. 추가 도구 없이 `pip install -r requirements.txt -c constraints.txt` 로 사용. 가장 가벼움.
+**도구 결정 (2026-05-05)**: **A. pip-compile (pip-tools)**
+- Gemini 와 Codex 모두 동일 권고 (verdict SHIP).
+- 근거: 사용자 설치 흐름 (`pip install -r requirements.txt`) 그대로 유지 — maintainer 만 pip-tools 필요. `constraints.txt` (B 후보) 는 `-c` 플래그 누락 시 제약이 무시되는 함정 + transitive 신규 추가 시 stale 위험이 있어 demo 사용자 인지부하 큼.
+- 제외된 후보: `uv lock` / Poetry / PDM / Hatch — pyproject.toml 도입을 동반해 packaging 구조 변경. 필요 시 별도 "packaging 모던화" task 로 분리.
 
-`uv lock` / Poetry / PDM / Hatch 는 pyproject.toml 도입을 동반하므로 본 task 에서 제외 — 필요 시 별도 "packaging 모던화" task 로 분리.
+**도입 절차 (구현 시)**:
+1. `git mv requirements.txt requirements.in` (현재 핀들이 그대로 입력 파일이 됨)
+2. venv + pip-tools 설치:
+   ```bash
+   python -m venv .venv
+   . .venv/bin/activate
+   python -m pip install --upgrade pip pip-tools
+   ```
+3. lock 산출:
+   ```bash
+   pip-compile requirements.in -o requirements.txt
+   ```
+4. 회귀 검증: `pip install -r requirements.txt && pytest`
+5. README 갱신:
+   - 일반 사용자: venv → activate → `pip install -r requirements.txt` → `pytest`
+   - 의존성 갱신자: `pip install pip-tools` → `pip-compile requirements.in -o requirements.txt`
+   - `requirements.in` 은 직접 의존성 입력, `requirements.txt` 는 transitive까지 exact pin 된 산출물임을 명시
 
-**작업 대상**:
-- 도구 선택 (A 또는 B)
-- 산출물 생성 + 커밋
-- `README.md` 의 setup 안내에 `python -m venv .venv` / `pip install -r requirements.txt` / `pytest` 흐름 + lock 재생성 명령 추가
-- `.gitignore` 에 도구별 캐시 (필요 시) 추가
+**선결 조건 (현재 막힌 지점)**:
+- 호스트에 `python3-venv`, `python3-pip` 가 설치돼 있어야 함 (현재 시스템엔 부재).
+- 설치 명령 (Debian/Ubuntu): `sudo apt install python3.11-venv python3-pip`
+- 또는 get-pip.py 부트스트랩으로 우회 가능.
+
+**구현 보류 사유**: 첫 시도에서 `ensurepip` 가 없어 venv 생성 실패. 환경 정비 후 위 절차 실행하면 그대로 적용됨.

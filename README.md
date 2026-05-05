@@ -4,6 +4,8 @@
 
 🎬 **영상**: https://youtu.be/ly5CUJwelFc
 
+📦 **Repo**: https://github.com/EhEo/ep-a-demo
+
 **사전 준비**: Claude Code · Codex · Gemini 설치/인증 → [SETUP.md](../SETUP.md)
 
 ---

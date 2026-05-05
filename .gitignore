@@ -1,0 +1,11 @@
+# Agent run logs (install.sh 적용 후 .agents-dev/log/ 자동 생성)
+.agents-*/log/
+.agents-*/state/
+
+# Python (lab 에서 sample.py 만들 때를 대비)
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store

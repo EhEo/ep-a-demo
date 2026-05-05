@@ -80,7 +80,7 @@
 
 ## Task 5: lock 산출물 도입 (Task 4 분리)
 
-**상태**: 대기 (도구 결정 완료, 실제 도입은 환경 정비 후)
+**상태**: 완료
 
 **배경**: Task 4 에서 분리. Task 3 audit 의 재현성 목표를 만족시키려면 transitive dep 까지 고정한 lock 산출물이 필요. 핀 정책 (Task 4) 은 이미 통일됐으므로, 이 task 는 *도구 선택 + 산출물 도입* 만 다룸.
 
@@ -107,9 +107,9 @@
    - 의존성 갱신자: `pip install pip-tools` → `pip-compile requirements.in -o requirements.txt`
    - `requirements.in` 은 직접 의존성 입력, `requirements.txt` 는 transitive까지 exact pin 된 산출물임을 명시
 
-**선결 조건 (현재 막힌 지점)**:
-- 호스트에 `python3-venv`, `python3-pip` 가 설치돼 있어야 함 (현재 시스템엔 부재).
-- 설치 명령 (Debian/Ubuntu): `sudo apt install python3.11-venv python3-pip`
-- 또는 get-pip.py 부트스트랩으로 우회 가능.
-
-**구현 보류 사유**: 첫 시도에서 `ensurepip` 가 없어 venv 생성 실패. 환경 정비 후 위 절차 실행하면 그대로 적용됨.
+**처리 결과 (2026-05-05)**:
+- `python3-venv`, `python3-pip` 호스트 설치 후 위 절차 그대로 실행.
+- `requirements.in` 신규 추가 (직접 의존성 5개), `requirements.txt` 는 pip-compile 산출물로 재생성 (transitive 포함 19 패키지 모두 exact pin).
+- 회귀 검증: `pip install -r requirements.txt && pytest` → 1 passed.
+- 부수 확인: starlette 가 0.46.2 로 풀려 CVE-2024-47874 패치 라인 (>=0.40.0) 안에 있음 — Task 3 의 보안 fix 가 lock 단에서도 검증됨.
+- README 에 Step 1.5 추가 (venv + 설치 + pytest + pip-compile 재생성).

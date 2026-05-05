@@ -21,6 +21,29 @@ git init -q && git add . && git commit -q -m "init"
 
 ---
 
+## Step 1.5. (선택) 의존성 설치 + 테스트
+
+데모 자체는 Step 2 부터 시작해도 되지만, `app/`/`tests/` 를 직접 돌려볼 거면 venv 에 lock 된 의존성을 설치한다.
+
+```bash
+python -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+pytest
+```
+
+- `requirements.in` — 직접 의존성 입력 (`>=X,<NextMajor` 정책)
+- `requirements.txt` — `pip-compile` 산출물 (transitive 까지 exact pin, 재현성 보장)
+
+의존성을 갱신할 때만:
+
+```bash
+pip install pip-tools
+pip-compile requirements.in -o requirements.txt
+```
+
+---
+
 ## Step 2. Claude Code 시작
 
 ```bash

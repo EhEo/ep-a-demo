@@ -2,6 +2,9 @@
 .agents-*/log/
 .agents-*/state/
 
+# install.sh 가 keybinding.conf.template 에서 생성하는 머신별 산출물 (절대경로 포함)
+.agents-*/tmux/keybinding.conf
+
 # Python (lab 에서 sample.py 만들 때를 대비)
 __pycache__/
 *.pyc

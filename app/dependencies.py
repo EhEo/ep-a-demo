@@ -1,5 +1,4 @@
-"""Database dependency for FastAPI routes (pre-Annotated style)."""
-from fastapi import Depends
+"""Database dependency for FastAPI routes."""
 
 
 def get_db():

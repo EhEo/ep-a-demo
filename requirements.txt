@@ -1,5 +1,5 @@
-fastapi==0.110.0       # planning upgrade to 0.115 — see BACKLOG Task 1
-pytest==7.4.0          # planning upgrade to 8.x — see BACKLOG Task 2
+fastapi==0.115.0
+pytest>=8,<9
 uvicorn>=0.27.0
 httpx>=0.26.0
-pytest-asyncio>=0.23.0
+pytest-asyncio>=0.23.6

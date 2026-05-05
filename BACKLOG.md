@@ -4,7 +4,7 @@
 
 ## Task 1: FastAPI dependency injection 변경 검토
 
-**상태**: 대기
+**상태**: 완료
 
 **배경**:
 프로젝트가 FastAPI 0.110 → 0.115 로 업그레이드 중. dependency injection 패턴이 일부 변경됐다는 changelog 언급이 있음. 본 task 는:
@@ -22,7 +22,7 @@
 
 ## Task 2: pytest 7 → 8 마이그레이션
 
-**상태**: 대기
+**상태**: 완료
 
 **배경**: pytest 7.x → 8.x 의 deprecation 경고 정리. 8.x 로 올렸을 때 fixture / config 변경이 필요한지 확인.
 

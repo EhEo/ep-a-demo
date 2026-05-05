@@ -36,7 +36,7 @@
 
 ## Task 3: requirements.txt 의존성 정기 audit
 
-**상태**: 대기
+**상태**: 완료
 
 **배경**: Task 1/2 처럼 마이그레이션이 밀려서 한 번에 처리하지 않도록, 의존성 상태를 정기적으로 점검. CVE / EOL / major version drift 를 조기에 잡아 마이그레이션 비용을 분산한다.
 
@@ -46,3 +46,24 @@
 - 출력물: 현재 핀 vs 최신 + 권장 액션 (immediate upgrade / monitor / no-op) 표
 
 **주기**: 분기 1 회 (또는 보안 권고 트리거 시)
+
+**1차 audit 결과 요약 (2026-05-05)**:
+- 즉시 액션: `fastapi==0.115.0` → `fastapi>=0.115.4,<0.116` (commit `cf5124d`, CVE-2024-47874 / Starlette MultiPart DoS, GHSA 확인)
+- 후속 follow-up 분리: 핀 정책 / lock 파일 부재 → Task 4
+- monitor: pytest 9, uvicorn 0.46, httpx 0.28 등 major drift — 향후 라운드에서 별도 마이그 task 로 분리
+
+---
+
+## Task 4: 핀 정책 통일 + lock/constraints 도입
+
+**상태**: 대기
+
+**배경**: Task 3 의 1차 audit 에서 Codex 가 핀 위생 NEEDS-FIX 두 건을 발견:
+1. `requirements.txt` 핀 스타일 혼재 (`==` 와 상한 없는 `>=` 가 섞여 있음) → 정책 불명확
+2. lock/constraints 파일 없음 → starlette/pydantic/anyio 등 transitive dep 가 설치 시점마다 변동 → 정기 audit 결과 재현 어려움
+
+**작업 대상**:
+- 핀 스타일 정책 결정: 모두 exact pin (`==`) vs 호환 상한 부여 (`>=X,<Y`) 중 택일
+- lock 도구 선택: `pip-compile` (`requirements.in` → `requirements.txt`) vs 별도 `constraints.txt` vs `uv lock` 등
+- 결정된 정책에 맞춰 `requirements.txt` 재정비 + 도구별 산출물 추가
+- `README.md` 의 setup 안내 갱신 (어떤 도구로 lock 재생성하는지)

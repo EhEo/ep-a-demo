@@ -75,7 +75,7 @@ fi
 mkdir -p "$LOG_DIR"
 TS="$(date +%Y%m%d-%H%M%S)"
 LOG="$LOG_DIR/codex-$TS.log"
-ln -sfn "codex-$TS.log" "$LOG_DIR/latest-codex.log"
+LATEST="$LOG_DIR/latest-codex.log"
 
 {
   echo "=== ask-codex.sh @ $TS ==="
@@ -85,11 +85,12 @@ ln -sfn "codex-$TS.log" "$LOG_DIR/latest-codex.log"
     echo "=== RESEARCH FILE: $RESEARCH_FILE ==="
   fi
   echo "=== RESPONSE ==="
-} > "$LOG"
+} | tee "$LOG" > "$LATEST"
 
-echo "[ask-codex] running — monitor: $SCRIPT_DIR/dashboard.sh codex  (raw: tail -F $LOG_DIR/latest-codex.log)" >&2
+echo "[ask-codex] running — monitor: $SCRIPT_DIR/dashboard.sh codex  (raw: tail -F $LATEST)" >&2
 RC=0
-"${REVIEWER_CLI:-${CODEX_CLI:-codex}}" exec "$PROMPT" 2>&1 | tee -a "$LOG" || RC=$?
+"${REVIEWER_CLI:-${CODEX_CLI:-codex}}" exec "$PROMPT" 2>&1 | tee -a "$LOG" "$LATEST" || RC=$?
 printf '\n=== END (rc=%d) ===\n' "$RC" >> "$LOG"
+printf '\n=== END (rc=%d) ===\n' "$RC" >> "$LATEST"
 echo
 echo "(log: $LOG, rc=$RC)" >&2

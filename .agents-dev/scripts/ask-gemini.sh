@@ -70,7 +70,7 @@ fi
 mkdir -p "$LOG_DIR"
 TS="$(date +%Y%m%d-%H%M%S)"
 LOG="$LOG_DIR/gemini-$TS.log"
-ln -sfn "gemini-$TS.log" "$LOG_DIR/latest-gemini.log"
+LATEST="$LOG_DIR/latest-gemini.log"
 
 {
   echo "=== ask-gemini.sh @ $TS ==="
@@ -81,11 +81,12 @@ ln -sfn "gemini-$TS.log" "$LOG_DIR/latest-gemini.log"
     echo "$STDIN_CONTEXT"
   fi
   echo "=== RESPONSE ==="
-} > "$LOG"
+} | tee "$LOG" > "$LATEST"
 
-echo "[ask-gemini] running — monitor: $SCRIPT_DIR/dashboard.sh gemini  (raw: tail -F $LOG_DIR/latest-gemini.log)" >&2
+echo "[ask-gemini] running — monitor: $SCRIPT_DIR/dashboard.sh gemini  (raw: tail -F $LATEST)" >&2
 RC=0
-"${RESEARCHER_CLI:-${GEMINI_CLI:-gemini}}" -p "$PROMPT" 2>&1 | tee -a "$LOG" || RC=$?
+"${RESEARCHER_CLI:-${GEMINI_CLI:-gemini}}" -p "$PROMPT" 2>&1 | tee -a "$LOG" "$LATEST" || RC=$?
 printf '\n=== END (rc=%d) ===\n' "$RC" >> "$LOG"
+printf '\n=== END (rc=%d) ===\n' "$RC" >> "$LATEST"
 echo
 echo "(log: $LOG, rc=$RC)" >&2

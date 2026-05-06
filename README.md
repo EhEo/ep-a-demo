@@ -80,6 +80,8 @@ Claude 가 자동 수행:
 
 ## Step 4. tmux 3-pane — 영상 화면 그대로
 
+### macOS / Linux
+
 ```bash
 # 1. keybinding.conf 생성 + ~/.tmux.conf 에 등록 (tmux 세션 밖에서)
 sed "s|__AGENT_HARNESS_PROJECT__|/tmp/ep_a-demo|g" \
@@ -93,13 +95,70 @@ tmux new-session -s ep-a
 #    (Ctrl-b = tmux 기본 prefix. Ctrl-b 먼저 누르고 손 떼고 R)
 ```
 
+### Windows (psmux + Git Bash)
+
+Windows에서는 psmux(WinGet 설치 tmux)와 Git Bash 조합을 사용합니다.
+경로 하드코딩 없이 **현재 디렉토리를 자동 감지**하여 레이아웃을 구성합니다.
+
+**초기 1회 전역 설정** (`~/.bashrc`, `~/.tmux.conf`, `~/bin/` 수정):
+
+```bash
+# ~/.bashrc — Git Bash PATH + psmux PATH + agents-init alias 추가
+export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/bin:$PATH"
+export PATH="$PATH:/c/Users/<사용자명>/AppData/Local/Microsoft/WinGet/Links"
+alias agents-init="bash /c/Users/<사용자명>/bin/agents-init.sh"
+```
+
+```bash
+# ~/.tmux.conf — psmux 기본 셸 설정 + 현재 pane 경로 자동 감지 바인딩
+set-option -g default-shell "C:/Program Files/Git/usr/bin/bash.exe"
+set-option -g default-command "bash --login"
+
+# Ctrl-b R → 현재 tmux 창에서 3-pane 레이아웃 즉시 적용
+# #{pane_current_path} 로 repo 위치를 자동 감지 (경로 하드코딩 불필요)
+bind-key R run-shell "/usr/bin/bash '#{pane_current_path}/.agents-dev/scripts/team-layout.sh' --here"
+```
+
+`~/bin/agents-init.sh`는 새 프로젝트 루트에서 `.agents-dev/` 디렉토리 전체를
+자동 생성하고 tmux 레이아웃을 시작하는 전역 스크립트입니다. 원본:
+[`C:/Users/<사용자명>/bin/agents-init.sh`](../../../bin/agents-init.sh)
+
+**새 프로젝트에서 실행 (1회로 환경 완성):**
+
+```bash
+# Git Bash에서 새 프로젝트 루트로 이동 후
+source ~/.bashrc   # alias 로드 (셸 재시작 시 자동)
+agents-init        # → .agents-dev/ 자동 생성 + psmux 3-pane 레이아웃 시작
+```
+
+```text
+┌─────────────────┬──────────────────┐
+│                 │  gemini          │
+│  Claude (PM)    │  dashboard       │
+│  shell —        ├──────────────────┤
+│  run 'claude'   │  codex           │
+│  yourself       │  dashboard       │
+└─────────────────┴──────────────────┘
+```
+
 좌측 pane 에서 `claude` 실행 → Step 3 자연어 입력. 우측 dashboard 에 색상 verdict box 등장.
+
+> **참고**: 이미 psmux 세션 안에 있다면 `Ctrl-b R`로 현재 창에 바로 레이아웃을 적용할 수 있습니다.
 
 ---
 
 ## 정리
 
+macOS / Linux:
+
 ```bash
 rm -rf /tmp/ep_a-demo
 sed -i '' '/source-file.*ep_a-demo/d' ~/.tmux.conf
+```
+
+Windows (psmux):
+
+```bash
+# psmux 세션 종료
+tmux kill-session -t agents
 ```

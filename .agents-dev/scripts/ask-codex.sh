@@ -12,6 +12,8 @@
 # Output goes to stdout AND .agents-dev/log/codex-<timestamp>.log
 set -euo pipefail
 
+export PATH="/usr/local/bin:/usr/bin:/bin:$PATH:/c/Users/MISTOP/AppData/Local/Microsoft/WinGet/Links"
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 AGENTS_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 ROLE_FILE="$AGENTS_DIR/roles/reviewer.md"

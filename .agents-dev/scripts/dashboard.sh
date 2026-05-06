@@ -16,6 +16,8 @@
 #   Ctrl-C  also quits
 set -uo pipefail
 
+export PATH="/usr/local/bin:/usr/bin:/bin:$PATH:/c/Users/MISTOP/AppData/Local/Microsoft/WinGet/Links"
+
 ROLE="${1:?usage: $0 gemini|codex}"
 
 case "$ROLE" in

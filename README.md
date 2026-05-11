@@ -105,8 +105,8 @@ Windows에서는 psmux(WinGet 설치 tmux)와 Git Bash 조합을 사용합니다
 ```bash
 # ~/.bashrc — Git Bash PATH + psmux PATH + agents-init alias 추가
 export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/bin:$PATH"
-export PATH="$PATH:/c/Users/<사용자명>/AppData/Local/Microsoft/WinGet/Links"
-alias agents-init="bash /c/Users/<사용자명>/bin/agents-init.sh"
+export PATH="$PATH:$HOME/AppData/Local/Microsoft/WinGet/Links"
+alias agents-init="bash $HOME/bin/agents-init.sh"
 ```
 
 ```bash
@@ -115,13 +115,16 @@ set-option -g default-shell "C:/Program Files/Git/usr/bin/bash.exe"
 set-option -g default-command "bash --login"
 
 # Ctrl-b R → 현재 tmux 창에서 3-pane 레이아웃 즉시 적용
-# #{pane_current_path} 로 repo 위치를 자동 감지 (경로 하드코딩 불필요)
-bind-key R run-shell "/usr/bin/bash '#{pane_current_path}/.agents-dev/scripts/team-layout.sh' --here"
+# 전역 ~/.agents-dev/scripts/ 를 사용하며 현재 pane 경로를 프로젝트로 전달
+bind-key R run-shell "AGENT_PROJECT_DIR='#{pane_current_path}' /usr/bin/bash '$HOME/.agents-dev/scripts/team-layout.sh' --here"
 ```
 
-`~/bin/agents-init.sh`는 새 프로젝트 루트에서 `.agents-dev/` 디렉토리 전체를
-자동 생성하고 tmux 레이아웃을 시작하는 전역 스크립트입니다. 원본:
-[`C:/Users/<사용자명>/bin/agents-init.sh`](../../../bin/agents-init.sh)
+`~/bin/agents-init.sh`는 새 프로젝트 루트에서 실행하면:
+- `~/.agents-dev/scripts/` 에 전역 스크립트를 설치/업데이트 (모든 프로젝트 공유)
+- 현재 프로젝트에는 `.agents-dev/log/` 만 생성 (로그 격리)
+- tmux 세션명을 프로젝트 폴더명으로 자동 설정 (멀티 프로젝트 충돌 방지)
+
+원본: [`~/bin/agents-init.sh`](../../../bin/agents-init.sh)
 
 **새 프로젝트에서 실행 (1회로 환경 완성):**
 

@@ -1,0 +1,52 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where tmux *)",
+      "Bash(tmux -V)",
+      "Bash(bash --version)",
+      "PowerShell(Get-Command tmux -ErrorAction SilentlyContinue)",
+      "Bash(find /usr /mingw64 /mingw32 -name \"tmux*\")",
+      "Bash(pacman -Q tmux)",
+      "Read(//etc/**)",
+      "Read(//c/ProgramData/chocolatey/bin/**)",
+      "PowerShell(Get-ChildItem \"$env:LOCALAPPDATA\\\\Programs\" -Directory | Select-Object -ExpandProperty Name)",
+      "Bash(/c/Users/MISTOP/AppData/Local/Microsoft/WinGet/Links/tmux.exe -V)",
+      "Read(//c/Users/MISTOP/AppData/Local/Microsoft/WinGet/Packages/marlocarlo.psmux_Microsoft.Winget.Source_8wekyb3d8bbwe//**)",
+      "PowerShell($env:PATH -split ';' | Where-Object { $_ -match 'WinGet' } | Select-Object)",
+      "PowerShell($tmux = \"$env:LOCALAPPDATA\\\\Microsoft\\\\WinGet\\\\Links\\\\tmux.exe\"; if \\(Test-Path $tmux\\) { & $tmux -V } else { \"not found at WinGet Links\" })",
+      "PowerShell(Get-ChildItem \"$env:LOCALAPPDATA\\\\Microsoft\\\\WinGet\\\\Packages\\\\marlocarlo.psmux_Microsoft.Winget.Source_8wekyb3d8bbwe\" -ErrorAction SilentlyContinue | Select-Object Name)",
+      "PowerShell($env:PATH -split ';' | Where-Object { $_ -match 'WinGet|winget' })",
+      "PowerShell([System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\) -split ';' | Select-String \"WinGet|winget|tmux\" | Select-Object -First 10)",
+      "Read(//c/Program Files/Git/bin/**)",
+      "Read(//c/Program Files/Git/**)",
+      "PowerShell(where.exe bash; Get-ChildItem \"C:\\\\Program Files\\\\Git\\\\bin\" -ErrorAction SilentlyContinue | Where-Object { $_.Name -match \"bash\" } | Select-Object FullName)",
+      "Bash(cygpath -w /usr/bin/bash.exe)",
+      "Bash(cygpath -w /usr/bin)",
+      "Read(//c//**)",
+      "Read(//mingw64/**)",
+      "Read(//c/Users/MISTOP/**)",
+      "Bash(chmod +x /c/Users/MISTOP/Documents/ep-a-demo/.agents-dev/scripts/*.sh)",
+      "PowerShell(Get-Command claude -ErrorAction SilentlyContinue)",
+      "Bash(mkdir -p /c/Users/MISTOP/bin)",
+      "Bash(chmod +x /c/Users/MISTOP/bin/agents-init.sh)",
+      "Bash(mkdir -p /tmp/test-new-project)",
+      "Read(//tmp/**)",
+      "Bash(agents-init --no-attach)",
+      "Bash(bash /c/Users/MISTOP/bin/agents-init.sh --no-attach)",
+      "Bash(dir /s /b \"c:\\\\Users\\\\MISTOP\\\\Documents\\\\ep-a-demo\\\\.agents-dev\\\\log\")",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(mkdir -p /c/Users/MISTOP/.agents-dev/scripts /c/Users/MISTOP/.agents-dev/roles && echo \"OK\")",
+      "Bash(chmod +x /c/Users/MISTOP/.agents-dev/scripts/*.sh)",
+      "Bash(rm -rf /c/Users/MISTOP/Documents/ep-a-demo/.agents-dev/scripts /c/Users/MISTOP/Documents/ep-a-demo/.agents-dev/roles && echo \"삭제 완료\" && ls /c/Users/MISTOP/Documents/ep-a-demo/.agents-dev/)",
+      "PowerShell(. $PROFILE; Get-Command agents-init -ErrorAction SilentlyContinue | Select-Object -ExpandProperty CommandType)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\MISTOP",
+      "C:\\Users\\MISTOP\\bin",
+      "C:\\Users\\MISTOP\\.agents-dev",
+      "C:\\Users\\MISTOP\\Documents\\ep-a-demo\\.agents-dev\\scripts",
+      "D:\\Michael\\OneDrive - Team Redpanda\\문서\\PowerShell"
+    ]
+  }
+}
